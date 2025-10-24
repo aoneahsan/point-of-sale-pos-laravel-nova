@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('difference');
             $table->timestamps();
 
-            $table->index(['stock_adjustment_id', 'product_variant_id']);});
+            $table->index(['stock_adjustment_id', 'product_variant_id'], 'sai_adj_variant_idx');
+        });
     }
 
     /**

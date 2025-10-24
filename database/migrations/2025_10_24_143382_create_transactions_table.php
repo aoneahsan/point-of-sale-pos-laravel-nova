@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
 
-            $table->index(['transactionable_type', 'transactionable_id']);
-            $table->index(['type', 'created_at']);});
+            $table->index(['type', 'created_at']);
+        });
     }
 
     /**

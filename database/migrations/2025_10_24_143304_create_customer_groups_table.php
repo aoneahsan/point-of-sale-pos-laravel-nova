@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('suppliers', function (Blueprint $table) {
+        Schema::create('customer_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->string('tax_number')->nullable();
-            $table->text('notes')->nullable();
+            $table->string('code')->unique();
+            $table->decimal('discount_percentage', 5, 2)->default(0);
+            $table->decimal('loyalty_points_multiplier', 3, 1)->default(1.0);
+            $table->text('description')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['active', 'name']);
+            $table->index('active');
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('suppliers');
+        Schema::dropIfExists('customer_groups');
     }
 };

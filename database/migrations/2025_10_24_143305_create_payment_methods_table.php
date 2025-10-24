@@ -11,16 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customer_groups', function (Blueprint $table) {
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('discount_percentage', 5, 2)->default(0);
-            $table->text('description')->nullable();
+            $table->string('code')->unique();
+            $table->enum('type', ['cash', 'card', 'digital', 'digital_wallet', 'store_credit', 'gift_card', 'bank_transfer', 'check', 'other']);
             $table->boolean('active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->json('settings')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('active');});
+            $table->index(['type', 'active']);
+        });
     }
 
     /**
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customer_groups');
+        Schema::dropIfExists('payment_methods');
     }
 };

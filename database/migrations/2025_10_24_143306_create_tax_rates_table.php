@@ -14,13 +14,16 @@ return new class extends Migration
         Schema::create('tax_rates', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code')->unique();
             $table->decimal('rate', 5, 2);
-            $table->text('description')->nullable();
             $table->boolean('active')->default(true);
+            $table->boolean('is_default')->default(false);
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('active');});
+            $table->index(['active', 'is_default']);
+        });
     }
 
     /**
