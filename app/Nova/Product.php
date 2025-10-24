@@ -9,6 +9,8 @@ use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Nova\Lenses\BestSellingProducts;
+use App\Nova\Filters\ActiveFilter;
 
 class Product extends Resource
 {
@@ -33,6 +35,20 @@ class Product extends Resource
             Boolean::make('Track Inventory')->default(true),
             HasMany::make('Variants', 'variants', ProductVariant::class),
             HasMany::make('Images', 'images', 'ProductImage'),
+        ];
+    }
+
+    public function lenses(NovaRequest $request)
+    {
+        return [
+            new BestSellingProducts,
+        ];
+    }
+
+    public function filters(NovaRequest $request)
+    {
+        return [
+            new ActiveFilter,
         ];
     }
 }

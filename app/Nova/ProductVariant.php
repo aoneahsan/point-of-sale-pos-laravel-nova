@@ -5,11 +5,12 @@ namespace App\Nova;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Nova\Lenses\LowStockProducts;
+use App\Nova\Filters\StoreFilter;
 
 class ProductVariant extends Resource
 {
@@ -35,8 +36,17 @@ class ProductVariant extends Resource
         ];
     }
 
+    public function lenses(NovaRequest $request)
+    {
+        return [
+            new LowStockProducts,
+        ];
+    }
+
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            new StoreFilter,
+        ];
     }
 }

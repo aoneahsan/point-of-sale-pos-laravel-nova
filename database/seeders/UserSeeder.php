@@ -15,6 +15,17 @@ class UserSeeder extends Seeder
         $northStore = Store::where('code', 'NORTH-001')->first();
         $southStore = Store::where('code', 'SOUTH-001')->first();
 
+        // Primary Super Admin
+        $primaryAdmin = User::create([
+            'name' => 'Ahsan Ahmed',
+            'email' => 'aoneahsan@gmail.com',
+            'password' => Hash::make('aoneahsan@gmail.com'),
+            'store_id' => null,
+            'active' => true,
+            'email_verified_at' => now(),
+        ]);
+        $primaryAdmin->assignRole('Super Admin');
+
         // Super Admin (not tied to any store)
         $superAdmin = User::create([
             'name' => 'Super Admin',

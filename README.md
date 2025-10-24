@@ -1,346 +1,383 @@
-# Laravel Point of Sale (POS) System
+# Laravel POS System
 
-A comprehensive, multi-tenant Point of Sale system built with Laravel 12, Laravel Nova 5, and Livewire 3.
+A comprehensive, multi-tenant Point of Sale (POS) system built with Laravel 12, Nova 5.7, and Livewire 3.
 
 ## Features
 
-### 🏪 Multi-Tenant Architecture
-- Store-based data isolation
-- Centralized product catalog with store-specific inventory
-- Per-store configuration and settings
+### Core Functionality
+- **Multi-Store Management**: Manage multiple stores with tenant isolation
+- **Product Management**: Products with variants, categories, brands, and inventory tracking
+- **Customer Management**: Customer profiles with loyalty points and store credit
+- **Sales Processing**: Complete POS interface with cart, payment processing, and receipt printing
+- **Inventory Management**: Stock tracking, low stock alerts, and stock movements
+- **Purchase Orders**: Supplier management and purchase order processing
+- **Reporting**: Comprehensive sales, inventory, and customer reports
+- **User Management**: Role-based access control with multiple user types
 
-### 🛒 Core POS Functionality
-- Real-time product search with barcode scanning
-- Shopping cart management
-- Multiple payment methods support
-- Customer management with loyalty points
-- Receipt generation and printing
-- Cash drawer management
-- Sales returns and refunds
-
-### 📦 Inventory Management
-- Product catalog with variants
-- Stock tracking and adjustments
-- Purchase order management
-- Low stock alerts
-- Stock movement history
-- Supplier management
-
-### 💰 Discounts & Promotions
-- Percentage and fixed amount discounts
-- Coupon codes with usage limits
-- Customer group-based pricing
-- Time-based promotions
-
-### 📊 Reporting & Analytics
-- Sales reports (daily, weekly, monthly)
-- Top-selling products
-- Inventory valuation
-- Customer purchase history
-- Tax reports
-
-### 🎨 Admin Panel (Laravel Nova)
-- Intuitive admin interface
-- Resource management
-- Advanced filtering and searching
-- Bulk operations
-- Data export capabilities
-
-### 🔌 REST API
-- Sanctum authentication
-- Product management endpoints
-- Customer management endpoints
-- Sales processing endpoints
-- Comprehensive API documentation
-
-## Tech Stack
-
-- **Framework**: Laravel 12.x
-- **Admin Panel**: Laravel Nova 5.7.6 (Inertia.js + Vue 3)
-- **Frontend**: Livewire 3.x
-- **Database**: MySQL 8.0+
-- **Cache/Queue**: Redis
-- **Payments**: Stripe Integration
-- **Authentication**: Laravel Sanctum
-- **Permissions**: Spatie Laravel Permission
-- **PDF Generation**: DomPDF
-- **Excel Export**: Maatwebsite Excel
+### Technical Features
+- **Laravel Nova Admin Panel**: Full-featured admin interface with custom dashboards, filters, actions, and lenses
+- **Livewire POS Interface**: Real-time reactive POS interface without page reloads
+- **REST API**: Complete API with Sanctum authentication for third-party integrations
+- **Background Jobs**: Queue-based processing for reports and alerts
+- **Caching Layer**: Redis-based caching for optimal performance
+- **Multi-tenancy**: Store-level data isolation with middleware protection
+- **PDF Generation**: Invoice generation with customizable templates
+- **Comprehensive Testing**: Pest-based test suite covering all major features
 
 ## Requirements
 
-- PHP 8.3+
-- MySQL 8.0+
-- Redis 6.0+
-- Composer
-- Node.js & NPM
+- PHP 8.3 or higher
+- MySQL 8.0 or higher / PostgreSQL 13 or higher
+- Redis 6.0 or higher (for caching, sessions, and queues)
+- Composer 2.x
+- Node.js 20.x and npm/yarn (for asset compilation)
 
 ## Installation
 
-### 1. Clone the Repository
-
+### 1. Clone the repository
 ```bash
 git clone <repository-url>
 cd pos-system
 ```
 
-### 2. Install Dependencies
-
+### 2. Install dependencies
 ```bash
 composer install
-npm install && npm run build
+npm install
 ```
 
-### 3. Environment Configuration
-
+### 3. Environment configuration
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Update `.env` with your database credentials:
-
+Edit `.env` file with your database and Redis credentials:
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=pos_system
 DB_USERNAME=root
-DB_PASSWORD=
+DB_PASSWORD=your_password
 
 REDIS_HOST=127.0.0.1
 REDIS_PASSWORD=null
 REDIS_PORT=6379
-
-CACHE_STORE=redis
-QUEUE_CONNECTION=redis
-SESSION_DRIVER=redis
-
-STRIPE_KEY=your_stripe_publishable_key
-STRIPE_SECRET=your_stripe_secret_key
 ```
 
-### 4. Database Setup
-
+### 4. Database setup
 ```bash
-php artisan migrate:fresh --seed
+php artisan migrate
+php artisan db:seed
 ```
 
-This will create all tables and seed demo data including:
-- 3 stores
-- 10 users across different roles
-- Sample products and inventory
-- Customer groups and customers
-- Payment methods and tax rates
-
-### 5. Configure Laravel Nova
-
-Nova is already installed. Access the admin panel at `/nova`.
-
-### 6. Start Development Server
-
+### 5. Nova installation
 ```bash
+# Add your Nova license key to .env
+NOVA_LICENSE_KEY=your_license_key_here
+
+# Publish Nova assets
+php artisan nova:install
+php artisan vendor:publish --provider="Laravel\Nova\NovaServiceProvider"
+```
+
+### 6. Storage setup
+```bash
+php artisan storage:link
+```
+
+### 7. Build assets
+```bash
+npm run build
+# or for development
+npm run dev
+```
+
+### 8. Start the application
+```bash
+# Start Laravel server
 php artisan serve
-```
 
-Visit `http://localhost:8000`
+# Start queue worker (in a separate terminal)
+php artisan queue:work
+
+# Start scheduler (in production, add to cron)
+php artisan schedule:work
+```
 
 ## Default Credentials
 
-### Super Admin
-- Email: admin@posstore.com
-- Password: password
+After seeding, you can login with:
 
-### Store Manager (Main Store)
-- Email: manager@posstore.com
-- Password: password
+- **Admin User**
+  - Email: admin@possystem.com
+  - Password: password
 
-### Cashier (Main Store)
-- Email: cashier1@posstore.com
-- Password: password
+- **Store Manager**
+  - Email: manager@store1.com
+  - Password: password
 
-## User Roles & Permissions
+- **Cashier**
+  - Email: cashier@store1.com
+  - Password: password
 
-### Super Admin
-- Full system access
-- Manage all stores
-- System-wide configuration
+## Usage
 
-### Store Manager
-- Manage store users
-- Product and inventory management
-- View all reports
-- Cash drawer oversight
+### Admin Panel
+Access the Nova admin panel at: `http://localhost:8000/admin`
 
-### Cashier
-- Process sales
-- Handle returns
-- Manage customers
-- Open/close cash drawer
+Features:
+- Dashboard with key metrics (sales, customers, average sale)
+- Complete resource management for all entities
+- Custom filters, actions, and lenses
+- Inventory dashboard with low stock alerts
+- Reports dashboard with sales analytics
 
-### Inventory Manager
-- Product management
-- Stock adjustments
-- Purchase orders
-- Supplier management
+### POS Interface
+Access the POS system at: `http://localhost:8000/pos`
 
-### Accountant
-- View reports
-- Financial oversight
-- No sale processing
+Features:
+- Product search with barcode scanning support
+- Shopping cart with real-time calculations
+- Multiple payment methods support
+- Split payment functionality
+- Receipt generation and printing
+- Customer selection for loyalty points
 
-## Key Directories
+### API
+API endpoints are available at: `http://localhost:8000/api/v1`
 
-```
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── API/          # API controllers
-│   │   │   └── POS/          # POS controllers
-│   │   └── Resources/        # API resources
-│   ├── Livewire/
-│   │   └── POS/              # POS Livewire components
-│   ├── Models/               # Eloquent models
-│   ├── Nova/                 # Nova resources
-│   ├── Observers/            # Model observers
-│   └── Services/             # Business logic services
-├── database/
-│   ├── migrations/           # Database migrations
-│   └── seeders/              # Database seeders
-├── docs/                     # Documentation
-└── resources/
-    └── views/
-        ├── livewire/         # Livewire views
-        └── pos/              # POS views
-```
+Authentication: Use Sanctum tokens
 
-## API Documentation
+Key endpoints:
+- `POST /api/login` - Get authentication token
+- `GET /api/products` - List products
+- `POST /api/sales` - Create sale
+- `GET /api/reports/sales` - Generate sales report
 
-### Authentication
-
-All API requests require authentication using Laravel Sanctum. Include the token in the Authorization header:
-
-```
-Authorization: Bearer {token}
-```
-
-### Endpoints
-
-#### Products
-- `GET /api/v1/products` - List all products
-- `GET /api/v1/products/{id}` - Get product details
-- `POST /api/v1/products` - Create product
-- `PUT /api/v1/products/{id}` - Update product
-- `DELETE /api/v1/products/{id}` - Delete product
-
-#### Customers
-- `GET /api/v1/customers` - List all customers
-- `GET /api/v1/customers/{id}` - Get customer details
-- `POST /api/v1/customers` - Create customer
-- `PUT /api/v1/customers/{id}` - Update customer
-- `DELETE /api/v1/customers/{id}` - Delete customer
-
-#### Sales
-- `GET /api/v1/sales` - List all sales
-- `GET /api/v1/sales/{id}` - Get sale details
-- `POST /api/v1/sales` - Create sale
-
-#### Reports
-- `GET /api/v1/reports/sales` - Sales report
-- `GET /api/v1/reports/inventory` - Inventory report
+See API documentation for complete endpoint list.
 
 ## Configuration
 
-### POS Settings (`config/pos.php`)
+### POS Settings
+Configure POS behavior in `.env`:
 
-```php
-'sale_reference_prefix' => 'SALE',
-'default_tax_rate' => 10.00,
-'currency' => 'USD',
-'enable_loyalty_points' => true,
-'loyalty_points_rate' => 0.1,
-'allow_negative_stock' => false,
-'low_stock_threshold' => 10,
+```env
+POS_DEFAULT_TAX_RATE=0.00
+POS_DEFAULT_CURRENCY=USD
+POS_DEFAULT_CURRENCY_SYMBOL=$
+POS_LOW_STOCK_THRESHOLD=10
+POS_PREVENT_NEGATIVE_STOCK=true
+POS_ENABLE_LOYALTY_POINTS=true
+POS_LOYALTY_POINTS_RATIO=100
+POS_REFUND_DAYS_LIMIT=30
 ```
 
-## Development
-
-### Running Tests
+### Queue Configuration
+The system uses Redis queues for background processing:
 
 ```bash
+# Start queue worker
+php artisan queue:work --queue=default,reports,alerts
+
+# Monitor failed jobs
+php artisan queue:failed
+```
+
+### Scheduler Configuration
+Add to crontab for scheduled tasks:
+
+```bash
+* * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+Scheduled tasks:
+- Daily sales reports (runs at 1:00 AM)
+- Low stock alerts (runs at 9:00 AM)
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Run all tests
 php artisan test
+
+# Run specific test file
+php artisan test tests/Feature/SaleServiceTest.php
+
+# Run with coverage
+php artisan test --coverage
 ```
 
-### Code Style
+## Architecture
 
-```bash
-./vendor/bin/pint
+### Directory Structure
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── API/          # API controllers
+│   │   └── POS/          # POS controllers
+│   └── Middleware/       # Custom middleware
+├── Livewire/
+│   └── POS/              # Livewire components
+├── Models/               # Eloquent models
+├── Nova/                 # Nova resources
+│   ├── Actions/          # Custom Nova actions
+│   ├── Dashboards/       # Custom dashboards
+│   ├── Filters/          # Custom filters
+│   ├── Lenses/           # Custom lenses
+│   └── Metrics/          # Custom metrics
+├── Observers/            # Model observers
+├── Services/             # Business logic services
+└── Jobs/                 # Queue jobs
 ```
 
-### Queue Workers
+### Key Services
 
+**SaleService**: Handles sale creation, calculations, and processing
+**InventoryService**: Manages stock levels and movements
+**PaymentService**: Processes payments and validates amounts
+**TaxService**: Calculates taxes based on rates
+**DiscountService**: Applies discounts and promotions
+**ReportService**: Generates various business reports
+**CacheService**: Manages application caching
+
+### Database Schema
+
+Key tables:
+- `stores` - Store information
+- `users` - User accounts
+- `products` - Product catalog
+- `product_variants` - Product variants with pricing/stock
+- `customers` - Customer information
+- `sales` - Sales transactions
+- `sale_items` - Individual sale line items
+- `sale_payments` - Payment records
+- `inventory_movements` - Stock movement history
+
+## Customization
+
+### Adding Custom Nova Actions
+Create a new action:
 ```bash
+php artisan nova:action ExportCustomers
+```
+
+### Adding Custom Metrics
+Create a new metric:
+```bash
+php artisan nova:metric TodaysSales
+```
+
+### Adding Custom Filters
+Create a new filter:
+```bash
+php artisan nova:filter DateRangeFilter
+```
+
+## Production Deployment
+
+### Optimization
+```bash
+# Cache configuration
+php artisan config:cache
+
+# Cache routes
+php artisan route:cache
+
+# Cache views
+php artisan view:cache
+
+# Optimize autoloader
+composer install --optimize-autoloader --no-dev
+```
+
+### Security
+- Set `APP_DEBUG=false` in production
+- Use strong `APP_KEY`
+- Configure proper file permissions
+- Use HTTPS
+- Set up proper CORS settings
+- Implement rate limiting
+- Regular security updates
+
+### Performance
+- Use Redis for caching, sessions, and queues
+- Enable OPcache
+- Use CDN for static assets
+- Optimize database indexes
+- Monitor with Laravel Telescope (dev) or third-party tools (prod)
+
+## Troubleshooting
+
+### Common Issues
+
+**Nova not showing resources**
+```bash
+php artisan nova:publish
+php artisan view:clear
+```
+
+**Queue jobs not processing**
+```bash
+php artisan queue:restart
 php artisan queue:work
 ```
 
-## Deployment
-
-### Production Checklist
-
-1. Set `APP_ENV=production` in `.env`
-2. Set `APP_DEBUG=false`
-3. Run `php artisan config:cache`
-4. Run `php artisan route:cache`
-5. Run `php artisan view:cache`
-6. Set up queue workers
-7. Configure Redis for cache and sessions
-8. Set up SSL certificate
-9. Configure proper file permissions
-10. Set up regular database backups
-
-### Supervisor Configuration
-
-```ini
-[program:pos-queue]
-process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/artisan queue:work --sleep=3 --tries=3
-autostart=true
-autorestart=true
-user=www-data
-numprocs=2
-redirect_stderr=true
-stdout_logfile=/path/to/storage/logs/worker.log
+**Cache issues**
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan view:clear
 ```
 
-## Features Roadmap
+**Permission errors**
+```bash
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+```
 
-- [ ] Multi-currency support
-- [ ] Advanced reporting dashboard
-- [ ] Email notifications
-- [ ] SMS notifications
-- [ ] Inventory forecasting
-- [ ] Employee time tracking
-- [ ] Advanced barcode generation
-- [ ] Customer loyalty tiers
-- [ ] Gift card management
-- [ ] Online ordering integration
+## Contributing
 
-## Support
-
-For support, email support@posystem.com or open an issue in the repository.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new features
+5. Ensure all tests pass
+6. Submit a pull request
 
 ## License
 
 This project is proprietary software. All rights reserved.
 
-## Credits
+## Support
 
-Built with:
-- [Laravel](https://laravel.com)
-- [Laravel Nova](https://nova.laravel.com)
-- [Livewire](https://livewire.laravel.com)
-- [Tailwind CSS](https://tailwindcss.com)
+For support, email support@possystem.com or create an issue in the repository.
+
+## Changelog
+
+### Version 1.0.0 (Initial Release)
+- Multi-store management
+- Product catalog with variants
+- Customer management with loyalty
+- Complete POS interface
+- Nova admin panel
+- REST API
+- Background jobs
+- Comprehensive reporting
+- PDF invoice generation
+
+## Acknowledgments
+
+- Laravel Framework
+- Laravel Nova
+- Livewire
+- DomPDF
+- Pest PHP
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: October 2025
+Built with ❤️ using Laravel

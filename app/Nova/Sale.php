@@ -12,6 +12,10 @@ use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use App\Models\Sale as SaleModel;
+use App\Nova\Filters\StoreFilter;
+use App\Nova\Filters\StatusFilter;
+use App\Nova\Actions\ExportSales;
+use App\Nova\Actions\RefundSale;
 
 class Sale extends Resource
 {
@@ -42,6 +46,22 @@ class Sale extends Resource
             DateTime::make('Created At')->readonly(),
             HasMany::make('Items', 'items', SaleItem::class),
             HasMany::make('Payments', 'payments', 'SalePayment'),
+        ];
+    }
+
+    public function filters(NovaRequest $request)
+    {
+        return [
+            new StoreFilter,
+            new StatusFilter,
+        ];
+    }
+
+    public function actions(NovaRequest $request)
+    {
+        return [
+            new ExportSales,
+            new RefundSale,
         ];
     }
 }
