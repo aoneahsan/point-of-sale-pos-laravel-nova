@@ -13,8 +13,20 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_group_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('name');
+            $table->string('email')->nullable()->unique();
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->integer('loyalty_points')->default(0);
+            $table->decimal('store_credit', 10, 2)->default(0);
+            $table->date('date_of_birth')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index(['customer_group_id', 'name']);
+            $table->index(['email', 'phone']);});
     }
 
     /**

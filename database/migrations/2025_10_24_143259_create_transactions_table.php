@@ -13,8 +13,15 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->morphs('transactionable');
+            $table->enum('type', ['payment', 'refund', 'credit', 'debit']);
+            $table->decimal('amount', 10, 2);
+            $table->string('reference')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
-        });
+
+            $table->index(['transactionable_type', 'transactionable_id']);
+            $table->index(['type', 'created_at']);});
     }
 
     /**

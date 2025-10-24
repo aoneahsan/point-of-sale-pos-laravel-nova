@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('sale_payments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('sale_id')->constrained()->onDelete('cascade');
+            $table->foreignId('payment_method_id')->constrained()->onDelete('restrict');
+            $table->decimal('amount', 10, 2);
+            $table->string('reference')->nullable();
             $table->timestamps();
-        });
+
+            $table->index(['sale_id', 'payment_method_id']);});
     }
 
     /**

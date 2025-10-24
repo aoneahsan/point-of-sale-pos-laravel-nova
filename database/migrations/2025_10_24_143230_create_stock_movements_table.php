@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('stock_movements', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_variant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('store_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+            $table->enum('type', ['sale', 'return', 'adjustment', 'purchase', 'transfer_in', 'transfer_out']);
+            $table->integer('quantity'); // Positive for additions, negative for deductions
+            $table->string('reference')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
-        });
+
+            $table->index(['product_variant_id', 'store_id', 'type']);
+            $table->index('created_at');});
     }
 
     /**

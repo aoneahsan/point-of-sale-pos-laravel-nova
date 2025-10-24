@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('receipts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('sale_id')->constrained()->onDelete('cascade');
+            $table->text('template')->nullable();
+            $table->timestamp('printed_at')->nullable();
+            $table->timestamp('emailed_at')->nullable();
             $table->timestamps();
-        });
+
+            $table->index('sale_id');});
     }
 
     /**

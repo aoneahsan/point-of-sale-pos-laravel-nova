@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('tax_rates', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->decimal('rate', 5, 2);
+            $table->text('description')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index('active');});
     }
 
     /**

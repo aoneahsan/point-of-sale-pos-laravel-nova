@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('customer_groups', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->decimal('discount_percentage', 5, 2)->default(0);
+            $table->text('description')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index('active');});
     }
 
     /**

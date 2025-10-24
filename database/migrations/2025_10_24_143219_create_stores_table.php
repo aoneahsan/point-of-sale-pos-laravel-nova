@@ -13,7 +13,18 @@ return new class extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('code')->unique();
+            $table->text('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
+            $table->string('tax_number')->nullable();
+            $table->boolean('active')->default(true);
+            $table->json('settings')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['active', 'created_at']);
         });
     }
 

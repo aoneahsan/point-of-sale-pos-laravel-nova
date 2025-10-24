@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('stock_adjustment_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('stock_adjustment_id')->constrained()->onDelete('cascade');
+            $table->foreignId('product_variant_id')->constrained()->onDelete('restrict');
+            $table->integer('quantity_before');
+            $table->integer('quantity_after');
+            $table->integer('difference');
             $table->timestamps();
-        });
+
+            $table->index(['stock_adjustment_id', 'product_variant_id']);});
     }
 
     /**

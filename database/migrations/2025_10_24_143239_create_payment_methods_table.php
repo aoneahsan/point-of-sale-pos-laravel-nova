@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->enum('type', ['cash', 'card', 'digital_wallet', 'store_credit', 'other']);
+            $table->boolean('active')->default(true);
+            $table->json('settings')->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index(['type', 'active']);});
     }
 
     /**

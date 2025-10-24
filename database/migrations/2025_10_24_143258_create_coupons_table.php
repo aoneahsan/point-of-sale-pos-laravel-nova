@@ -13,8 +13,18 @@ return new class extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('discount_id')->constrained()->onDelete('cascade');
+            $table->string('code')->unique();
+            $table->integer('max_uses')->nullable();
+            $table->integer('uses')->default(0);
+            $table->integer('max_uses_per_customer')->default(1);
+            $table->dateTime('expires_at')->nullable();
+            $table->boolean('active')->default(true);
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index(['code', 'active']);
+            $table->index('expires_at');});
     }
 
     /**

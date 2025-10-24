@@ -13,8 +13,23 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('store_id')->constrained()->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('customer_id')->nullable()->constrained()->onDelete('set null');
+            $table->string('reference')->unique();
+            $table->decimal('subtotal', 10, 2);
+            $table->decimal('tax', 10, 2)->default(0);
+            $table->decimal('discount', 10, 2)->default(0);
+            $table->decimal('total', 10, 2);
+            $table->enum('status', ['completed', 'pending', 'on_hold', 'cancelled', 'refunded'])->default('completed');
+            $table->text('notes')->nullable();
             $table->timestamps();
-        });
+            $table->softDeletes();
+
+            $table->index(['store_id', 'user_id', 'status']);
+            $table->index('customer_id');
+            $table->index('reference');
+            $table->index('created_at');});
     }
 
     /**
