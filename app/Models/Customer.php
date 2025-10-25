@@ -50,7 +50,7 @@ class Customer extends Model
 
     protected $casts = [
         'loyalty_points' => 'integer',
-        'store_credit' => 'decimal:2',
+        'store_credit' => 'float',
         'date_of_birth' => 'date',
         'active' => 'boolean',
     ];
