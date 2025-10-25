@@ -32,7 +32,7 @@ class CashDrawer extends Resource
             ])->default('open'),
             DateTime::make('Opened At')->readonly(),
             DateTime::make('Closed At')->nullable()->readonly(),
-            HasMany::make('Transactions', 'transactions', 'CashTransaction'),
+            HasMany::make('Transactions', 'transactions', CashTransaction::class),
         ];
     }
 }

@@ -34,6 +34,6 @@ class MainDashboard extends Dashboard
      */
     public function uriKey(): string
     {
-        return 'main-dashboard';
+        return 'main';
     }
 }

@@ -45,7 +45,7 @@ class Sale extends Resource
             Textarea::make('Notes')->rows(3),
             DateTime::make('Created At')->readonly(),
             HasMany::make('Items', 'items', SaleItem::class),
-            HasMany::make('Payments', 'payments', 'SalePayment'),
+            HasMany::make('Payments', 'payments', SalePayment::class),
         ];
     }
 

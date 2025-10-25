@@ -40,7 +40,7 @@ class PurchaseOrder extends Resource
                 'cancelled' => 'Cancelled',
             ])->default('draft'),
             Textarea::make('Notes')->rows(3),
-            HasMany::make('Items', 'items', 'PurchaseOrderItem'),
+            HasMany::make('Items', 'items', PurchaseOrderItem::class),
         ];
     }
 }

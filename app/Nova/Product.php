@@ -34,7 +34,7 @@ class Product extends Resource
             Boolean::make('Featured')->default(false),
             Boolean::make('Track Inventory')->default(true),
             HasMany::make('Variants', 'variants', ProductVariant::class),
-            HasMany::make('Images', 'images', 'ProductImage'),
+            HasMany::make('Images', 'images', ProductImage::class),
         ];
     }
 

@@ -10,6 +10,9 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\MorphTo;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Nova\ProductVariant;
+use App\Nova\Sale;
+use App\Nova\PurchaseOrder;
 
 class StockMovement extends Resource
 {
