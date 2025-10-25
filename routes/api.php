@@ -7,11 +7,13 @@ use App\Http\Controllers\API\SaleController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\AuthController;
 
-// Public routes
-Route::post('/login', [AuthController::class, 'login']);
+// Public routes (with stricter rate limiting)
+Route::middleware(['throttle:login'])->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+});
 
-// Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+// Protected routes (with rate limiting)
+Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
     // Products
     Route::apiResource('products', ProductController::class);
     Route::get('products/{product}/variants', [ProductController::class, 'variants']);
