@@ -44,12 +44,11 @@ class SaleService
                 SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_variant_id' => $variant->id,
-                    'product_name' => $variant->product->name . ' - ' . $variant->name,
                     'quantity' => $quantity,
-                    'price' => $price,
+                    'unit_price' => $price,
                     'discount' => $discount,
                     'tax' => $tax,
-                    'subtotal' => $itemSubtotal + $tax,
+                    'total' => $itemSubtotal + $tax,
                 ]);
 
                 $subtotal += $itemSubtotal;
