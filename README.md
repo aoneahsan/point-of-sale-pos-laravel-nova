@@ -111,52 +111,102 @@ php artisan schedule:work
 After seeding, you can login with:
 
 - **Admin User**
-  - Email: admin@possystem.com
-  - Password: password
+  - Email: `admin@example.com`
+  - Password: `password`
+  - Access: Full system access (Admin Panel + POS + API)
 
 - **Store Manager**
-  - Email: manager@store1.com
-  - Password: password
+  - Email: `manager@example.com`
+  - Password: `password`
+  - Access: Store management + POS + Reports
 
 - **Cashier**
-  - Email: cashier@store1.com
-  - Password: password
+  - Email: `cashier@example.com`
+  - Password: `password`
+  - Access: POS interface (limited admin access)
 
 ## Usage
 
-### Admin Panel
-Access the Nova admin panel at: `http://localhost:8000/admin`
+### 1. Admin Panel (Back Office)
 
-Features:
-- Dashboard with key metrics (sales, customers, average sale)
-- Complete resource management for all entities
-- Custom filters, actions, and lenses
-- Inventory dashboard with low stock alerts
-- Reports dashboard with sales analytics
+**Access URL:** `http://localhost:8000/admin`
 
-### POS Interface
-Access the POS system at: `http://localhost:8000/pos`
+**Login Steps:**
+1. Navigate to `http://localhost:8000/admin/login`
+2. Use credentials: `admin@example.com` / `password`
+3. Explore the dashboard and resources
 
-Features:
-- Product search with barcode scanning support
-- Shopping cart with real-time calculations
-- Multiple payment methods support
-- Split payment functionality
-- Receipt generation and printing
-- Customer selection for loyalty points
+**Features:**
+- 📊 3 Custom dashboards (Main, Inventory, Reports)
+- 📦 30+ Nova resources (Products, Sales, Customers, etc.)
+- 🔍 Advanced filters and search
+- 📈 Real-time metrics (sales, customers, inventory)
+- 💾 Bulk actions and exports
+- 🎯 Custom lenses (Low Stock, Best Sellers)
+- 📋 Comprehensive reports
 
-### API
-API endpoints are available at: `http://localhost:8000/api/v1`
+### 2. POS Interface (Cashier)
 
-Authentication: Use Sanctum tokens
+**Access URL:** `http://localhost:8000/pos`
 
-Key endpoints:
+**Login Steps:**
+1. **Must login to admin panel first:** `http://localhost:8000/admin/login`
+2. Then navigate to: `http://localhost:8000/pos`
+3. Start processing sales
+
+**Features:**
+- ⚡ Lightning-fast product search (< 200ms)
+- 🔍 Barcode scanning support
+- 🛒 Real-time shopping cart
+- 💳 Multiple payment methods (cash, card, split payments)
+- 👤 Customer selection and loyalty points
+- 🎟️ Discount and coupon application
+- 🧾 Receipt printing and email
+- 💰 Cash drawer management
+- ⌨️ Keyboard shortcuts (F1-F12 for speed)
+
+**POS Routes:**
+- `/pos` - Main POS interface
+- `/pos/receipt/{sale}` - View/print receipt
+
+### 3. REST API (Mobile Apps & Integrations)
+
+**Base URL:** `http://localhost:8000/api`
+
+**Authentication:** Laravel Sanctum (Token-based)
+
+**Quick Start:**
+```bash
+# 1. Get API token
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@example.com","password":"password"}'
+
+# Response: {"user":{...},"token":"1|abcd..."}
+
+# 2. Use token in requests
+curl http://localhost:8000/api/products \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Key Endpoints:**
 - `POST /api/login` - Get authentication token
-- `GET /api/products` - List products
-- `POST /api/sales` - Create sale
-- `GET /api/reports/sales` - Generate sales report
+- `GET /api/user` - Get authenticated user
+- `GET /api/products` - List products (with search/filters)
+- `GET /api/products/{id}` - Get product details
+- `GET /api/customers` - List customers
+- `POST /api/sales` - Create a sale
+- `POST /api/sales/{id}/refund` - Process refund
+- `GET /api/reports/sales` - Sales report
+- `GET /api/reports/inventory` - Inventory report
+- `GET /api/reports/customers` - Customer report
+- `POST /api/logout` - Revoke token
 
-See API documentation for complete endpoint list.
+**Rate Limits:**
+- Login endpoint: 5 requests per minute
+- API endpoints: 60 requests per minute
+
+**Full API Documentation:** See `docs/API_DOCUMENTATION.md` for complete reference with request/response examples.
 
 ## Configuration
 
