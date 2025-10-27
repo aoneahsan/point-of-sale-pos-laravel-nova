@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use App\Models\ProductVariant;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Store;
@@ -33,185 +32,227 @@ class ProductSeeder extends Seeder
         $standardTax = TaxRate::where('code', 'STANDARD')->first();
         $reducedTax = TaxRate::where('code', 'REDUCED')->first();
 
-        // Product 1: iPhone 15 Pro
-        $iphone = Product::create([
-            'category_id' => $smartphones->id,
-            'brand_id' => $apple->id,
-            'tax_rate_id' => $standardTax->id,
-            'name' => 'iPhone 15 Pro',
-            'slug' => 'iphone-15-pro',
-            'description' => 'Latest iPhone with advanced features and ProMotion display',
-            'sku' => 'APPL-IPH15PRO',
-            'barcode' => '1234567890123',
-            'unit' => 'piece',
-            'active' => true,
-            'featured' => true,
-            'track_inventory' => true,
-        ]);
-
-        // Variants for iPhone 15 Pro
-        foreach (['128GB', '256GB', '512GB'] as $storage) {
-            foreach (['Black', 'White', 'Blue'] as $color) {
-                ProductVariant::create([
-                    'product_id' => $iphone->id,
-                    'store_id' => $mainStore->id,
-                    'name' => "{$storage} {$color}",
-                    'sku' => "APPL-IPH15PRO-{$storage}-{$color}",
-                    'barcode' => '1234567' . rand(100000, 999999),
-                    'price' => $storage === '128GB' ? 999.00 : ($storage === '256GB' ? 1099.00 : 1299.00),
-                    'cost' => $storage === '128GB' ? 750.00 : ($storage === '256GB' ? 850.00 : 1000.00),
-                    'stock' => rand(10, 50),
-                    'low_stock_threshold' => 5,
-                    'attributes' => ['storage' => $storage, 'color' => $color],
-                ]);
-            }
-        }
-
-        // Product 2: Samsung Galaxy S24
-        $galaxy = Product::create([
-            'category_id' => $smartphones->id,
-            'brand_id' => $samsung->id,
-            'tax_rate_id' => $standardTax->id,
-            'name' => 'Samsung Galaxy S24',
-            'slug' => 'samsung-galaxy-s24',
-            'description' => 'Flagship Samsung smartphone with AI features',
-            'sku' => 'SAMS-GALS24',
-            'barcode' => '2234567890124',
-            'unit' => 'piece',
-            'active' => true,
-            'featured' => true,
-            'track_inventory' => true,
-        ]);
-
-        foreach (['128GB', '256GB'] as $storage) {
-            ProductVariant::create([
-                'product_id' => $galaxy->id,
+        $products = [
+            // Smartphones
+            [
                 'store_id' => $mainStore->id,
-                'name' => $storage,
-                'sku' => "SAMS-GALS24-{$storage}",
-                'barcode' => '2234567' . rand(100000, 999999),
-                'price' => $storage === '128GB' ? 849.00 : 949.00,
-                'cost' => $storage === '128GB' ? 650.00 : 750.00,
-                'stock' => rand(15, 40),
-                'low_stock_threshold' => 5,
-                'attributes' => ['storage' => $storage],
-            ]);
-        }
-
-        // Product 3: Dell XPS 15
-        $dellLaptop = Product::create([
-            'category_id' => $laptops->id,
-            'brand_id' => $dell->id,
-            'tax_rate_id' => $standardTax->id,
-            'name' => 'Dell XPS 15',
-            'slug' => 'dell-xps-15',
-            'description' => 'Premium laptop with stunning display',
-            'sku' => 'DELL-XPS15',
-            'barcode' => '3234567890125',
-            'unit' => 'piece',
-            'active' => true,
-            'featured' => true,
-            'track_inventory' => true,
-        ]);
-
-        ProductVariant::create([
-            'product_id' => $dellLaptop->id,
-            'store_id' => $mainStore->id,
-            'name' => 'i7 16GB 512GB',
-            'sku' => 'DELL-XPS15-I7-16-512',
-            'barcode' => '3234567890125',
-            'price' => 1499.00,
-            'cost' => 1200.00,
-            'stock' => rand(5, 20),
-            'low_stock_threshold' => 3,
-            'attributes' => ['processor' => 'i7', 'ram' => '16GB', 'storage' => '512GB'],
-        ]);
-
-        // Product 4: Nike Air Max
-        $shoes = Product::create([
-            'category_id' => $mensClothing->id,
-            'brand_id' => $nike->id,
-            'tax_rate_id' => $reducedTax->id,
-            'name' => 'Nike Air Max 2024',
-            'slug' => 'nike-air-max-2024',
-            'description' => 'Comfortable running shoes with air cushioning',
-            'sku' => 'NIKE-AIRMAX24',
-            'barcode' => '4234567890126',
-            'unit' => 'pair',
-            'active' => true,
-            'featured' => false,
-            'track_inventory' => true,
-        ]);
-
-        foreach ([8, 9, 10, 11, 12] as $size) {
-            ProductVariant::create([
-                'product_id' => $shoes->id,
+                'category_id' => $smartphones->id,
+                'brand_id' => $apple->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'iPhone 15 Pro',
+                'slug' => 'iphone-15-pro',
+                'description' => 'Latest iPhone with advanced features and ProMotion display',
+                'sku' => 'APPL-IPH15PRO',
+                'barcode' => '1234567890123',
+                'unit' => 'piece',
+                'price' => 999.00,
+                'cost' => 750.00,
+                'stock_quantity' => 50,
+                'reorder_point' => 10,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => true,
+                'track_inventory' => true,
+            ],
+            [
                 'store_id' => $mainStore->id,
-                'name' => "Size {$size}",
-                'sku' => "NIKE-AIRMAX24-{$size}",
-                'barcode' => '42345678' . str_pad($size, 5, '0', STR_PAD_LEFT),
-                'price' => 129.99,
-                'cost' => 80.00,
-                'stock' => rand(20, 50),
-                'low_stock_threshold' => 10,
-                'attributes' => ['size' => $size],
-            ]);
+                'category_id' => $smartphones->id,
+                'brand_id' => $samsung->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'Samsung Galaxy S24',
+                'slug' => 'samsung-galaxy-s24',
+                'description' => 'Flagship Samsung smartphone with AI features',
+                'sku' => 'SAMS-GALS24',
+                'barcode' => '2234567890124',
+                'unit' => 'piece',
+                'price' => 849.00,
+                'cost' => 650.00,
+                'stock_quantity' => 40,
+                'reorder_point' => 10,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => true,
+                'track_inventory' => true,
+            ],
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $smartphones->id,
+                'brand_id' => $apple->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'iPhone 14',
+                'slug' => 'iphone-14',
+                'description' => 'Previous generation iPhone with excellent performance',
+                'sku' => 'APPL-IPH14',
+                'barcode' => '3234567890125',
+                'unit' => 'piece',
+                'price' => 699.00,
+                'cost' => 550.00,
+                'stock_quantity' => 60,
+                'reorder_point' => 15,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => false,
+                'track_inventory' => true,
+            ],
+
+            // Laptops
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $laptops->id,
+                'brand_id' => $apple->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'MacBook Pro 16"',
+                'slug' => 'macbook-pro-16',
+                'description' => 'Powerful laptop for professionals with M3 Pro chip',
+                'sku' => 'APPL-MBP16',
+                'barcode' => '4234567890126',
+                'unit' => 'piece',
+                'price' => 2499.00,
+                'cost' => 2000.00,
+                'stock_quantity' => 25,
+                'reorder_point' => 5,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => true,
+                'track_inventory' => true,
+            ],
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $laptops->id,
+                'brand_id' => $dell->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'Dell XPS 15',
+                'slug' => 'dell-xps-15',
+                'description' => 'Premium Windows laptop with stunning display',
+                'sku' => 'DELL-XPS15',
+                'barcode' => '5234567890127',
+                'unit' => 'piece',
+                'price' => 1799.00,
+                'cost' => 1400.00,
+                'stock_quantity' => 30,
+                'reorder_point' => 8,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => false,
+                'track_inventory' => true,
+            ],
+
+            // Accessories
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $accessories->id,
+                'brand_id' => $apple->id,
+                'tax_rate_id' => $reducedTax->id,
+                'name' => 'AirPods Pro',
+                'slug' => 'airpods-pro',
+                'description' => 'Premium wireless earbuds with active noise cancellation',
+                'sku' => 'APPL-AIRPODSPRO',
+                'barcode' => '6234567890128',
+                'unit' => 'piece',
+                'price' => 249.00,
+                'cost' => 150.00,
+                'stock_quantity' => 100,
+                'reorder_point' => 20,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => true,
+                'track_inventory' => true,
+            ],
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $accessories->id,
+                'brand_id' => $apple->id,
+                'tax_rate_id' => $reducedTax->id,
+                'name' => 'Magic Mouse',
+                'slug' => 'magic-mouse',
+                'description' => 'Wireless rechargeable mouse with multi-touch surface',
+                'sku' => 'APPL-MAGICMOUSE',
+                'barcode' => '7234567890129',
+                'unit' => 'piece',
+                'price' => 79.00,
+                'cost' => 45.00,
+                'stock_quantity' => 75,
+                'reorder_point' => 15,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => false,
+                'track_inventory' => true,
+            ],
+
+            // Clothing
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $mensClothing->id,
+                'brand_id' => $nike->id,
+                'tax_rate_id' => $reducedTax->id,
+                'name' => 'Nike Air Jordan T-Shirt',
+                'slug' => 'nike-air-jordan-tshirt',
+                'description' => 'Comfortable cotton t-shirt with Air Jordan logo',
+                'sku' => 'NIKE-AJ-TSHIRT',
+                'barcode' => '8234567890130',
+                'unit' => 'piece',
+                'price' => 39.99,
+                'cost' => 20.00,
+                'stock_quantity' => 150,
+                'reorder_point' => 30,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => false,
+                'track_inventory' => true,
+            ],
+
+            // Furniture
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $furniture->id,
+                'brand_id' => $ikea->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'IKEA Office Chair',
+                'slug' => 'ikea-office-chair',
+                'description' => 'Ergonomic office chair with lumbar support',
+                'sku' => 'IKEA-OFFICECHAIR',
+                'barcode' => '9234567890131',
+                'unit' => 'piece',
+                'price' => 299.00,
+                'cost' => 180.00,
+                'stock_quantity' => 45,
+                'reorder_point' => 10,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => false,
+                'track_inventory' => true,
+            ],
+            [
+                'store_id' => $mainStore->id,
+                'category_id' => $furniture->id,
+                'brand_id' => $ikea->id,
+                'tax_rate_id' => $standardTax->id,
+                'name' => 'IKEA Standing Desk',
+                'slug' => 'ikea-standing-desk',
+                'description' => 'Adjustable height desk for healthier working',
+                'sku' => 'IKEA-STANDDESK',
+                'barcode' => '9334567890132',
+                'unit' => 'piece',
+                'price' => 599.00,
+                'cost' => 380.00,
+                'stock_quantity' => 20,
+                'reorder_point' => 5,
+                'track_stock' => true,
+                'active' => true,
+                'featured' => true,
+                'track_inventory' => true,
+            ],
+        ];
+
+        foreach ($products as $productData) {
+            Product::create($productData);
         }
 
-        // Product 5: IKEA Office Desk
-        $desk = Product::create([
-            'category_id' => $furniture->id,
-            'brand_id' => $ikea->id,
-            'tax_rate_id' => $standardTax->id,
-            'name' => 'IKEA BEKANT Desk',
-            'slug' => 'ikea-bekant-desk',
-            'description' => 'Adjustable office desk with cable management',
-            'sku' => 'IKEA-BEKANT',
-            'barcode' => '5234567890127',
-            'unit' => 'piece',
-            'active' => true,
-            'featured' => false,
-            'track_inventory' => true,
-        ]);
+        // Create some products for other stores using factory
+        Product::factory()->count(20)->create(['store_id' => $mainStore->id]);
+        Product::factory()->count(15)->create(['store_id' => $northStore->id]);
+        Product::factory()->count(15)->create(['store_id' => $southStore->id]);
 
-        ProductVariant::create([
-            'product_id' => $desk->id,
-            'store_id' => $mainStore->id,
-            'name' => 'White 160x80cm',
-            'sku' => 'IKEA-BEKANT-WHT-160',
-            'barcode' => '5234567890127',
-            'price' => 299.00,
-            'cost' => 200.00,
-            'stock' => rand(10, 25),
-            'low_stock_threshold' => 5,
-            'attributes' => ['color' => 'White', 'dimensions' => '160x80cm'],
-        ]);
-
-        // Create some variants for other stores (North and South)
-        ProductVariant::create([
-            'product_id' => $iphone->id,
-            'store_id' => $northStore->id,
-            'name' => '128GB Black',
-            'sku' => 'APPL-IPH15PRO-128GB-Black-NORTH',
-            'barcode' => '1234567' . rand(100000, 999999),
-            'price' => 999.00,
-            'cost' => 750.00,
-            'stock' => rand(5, 20),
-            'low_stock_threshold' => 5,
-            'attributes' => ['storage' => '128GB', 'color' => 'Black'],
-        ]);
-
-        ProductVariant::create([
-            'product_id' => $galaxy->id,
-            'store_id' => $southStore->id,
-            'name' => '128GB',
-            'sku' => 'SAMS-GALS24-128GB-SOUTH',
-            'barcode' => '2234567' . rand(100000, 999999),
-            'price' => 849.00,
-            'cost' => 650.00,
-            'stock' => rand(5, 20),
-            'low_stock_threshold' => 5,
-            'attributes' => ['storage' => '128GB'],
-        ]);
+        $this->command->info('Products created successfully!');
     }
 }
