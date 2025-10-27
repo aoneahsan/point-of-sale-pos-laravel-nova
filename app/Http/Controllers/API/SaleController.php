@@ -52,13 +52,26 @@ class SaleController extends Controller
             'discount' => 'nullable|numeric|min:0',
             'notes' => 'nullable',
             'items' => 'required|array',
-            'items.*.product_variant_id' => 'required|exists:product_variants,id',
+            'items.*.product_id' => 'nullable|exists:products,id',
+            'items.*.product_variant_id' => 'nullable|exists:product_variants,id',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.discount' => 'nullable|numeric|min:0',
             'payments' => 'required|array',
             'payments.*.payment_method_id' => 'required|exists:payment_methods,id',
             'payments.*.amount' => 'required|numeric|min:0',
         ]);
+
+        // Validate that each item has either product_id or product_variant_id
+        foreach ($validated['items'] as $index => $item) {
+            if (empty($item['product_id']) && empty($item['product_variant_id'])) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => [
+                        "items.{$index}" => ['Each item must have either product_id or product_variant_id'],
+                    ],
+                ], 422);
+            }
+        }
 
         $sale = $this->saleService->createSale([
             'store_id' => $validated['store_id'],

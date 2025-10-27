@@ -25,10 +25,18 @@
         <tbody>
             @foreach($sale->items as $item)
                 <tr class="border-b">
-                    <td class="py-2">{{ $item->product_name }}</td>
+                    <td class="py-2">
+                        @if($item->product)
+                            {{ $item->product->name }}
+                        @elseif($item->productVariant)
+                            {{ $item->productVariant->product->name }} - {{ $item->productVariant->name }}
+                        @else
+                            {{ $item->product_name ?? 'Unknown Product' }}
+                        @endif
+                    </td>
                     <td class="text-right">{{ $item->quantity }}</td>
-                    <td class="text-right">${{ number_format($item->price, 2) }}</td>
-                    <td class="text-right">${{ number_format($item->subtotal, 2) }}</td>
+                    <td class="text-right">${{ number_format($item->unit_price, 2) }}</td>
+                    <td class="text-right">${{ number_format($item->total, 2) }}</td>
                 </tr>
             @endforeach
         </tbody>

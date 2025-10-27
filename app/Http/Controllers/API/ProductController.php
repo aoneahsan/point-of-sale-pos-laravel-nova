@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\Product\StoreProductRequest;
+use App\Http\Requests\API\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -12,22 +14,26 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::with(['category', 'brand', 'variants']);
-        
+
         if ($request->has('search')) {
             $search = $request->search;
             $query->search($search);
         }
-        
+
         if ($request->has('category_id')) {
             $query->where('category_id', $request->category_id);
         }
-        
+
         if ($request->has('brand_id')) {
             $query->where('brand_id', $request->brand_id);
         }
-        
+
+        if ($request->has('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
+
         $products = $query->active()->paginate($request->get('per_page', 15));
-        
+
         return ProductResource::collection($products);
     }
 
@@ -36,31 +42,16 @@ class ProductController extends Controller
         return new ProductResource($product->load(['category', 'brand', 'variants']));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|max:255',
-            'sku' => 'required|unique:products',
-            'category_id' => 'nullable|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-            'description' => 'nullable',
-        ]);
-
-        $product = Product::create($validated);
-        return new ProductResource($product);
+        $product = Product::create($request->validated());
+        return new ProductResource($product->load(['category', 'brand', 'variants']));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $validated = $request->validate([
-            'name' => 'sometimes|max:255',
-            'sku' => 'sometimes|unique:products,sku,' . $product->id,
-            'category_id' => 'nullable|exists:categories,id',
-            'brand_id' => 'nullable|exists:brands,id',
-        ]);
-
-        $product->update($validated);
-        return new ProductResource($product);
+        $product->update($request->validated());
+        return new ProductResource($product->fresh(['category', 'brand', 'variants']));
     }
 
     public function destroy(Product $product)

@@ -61,24 +61,29 @@ class Payment extends Component
             return;
         }
 
-        $saleService = app(SaleService::class);
+        try {
+            $saleService = app(SaleService::class);
 
-        $sale = $saleService->createSale([
-            'store_id' => Auth::user()->store_id,
-            'user_id' => Auth::id(),
-            'customer_id' => $this->customerId,
-            'discount' => $this->discount,
-            'notes' => $this->notes,
-            'items' => collect($this->cart)->map(fn($item) => [
-                'product_variant_id' => $item['variant_id'],
-                'quantity' => $item['quantity'],
-                'discount' => $item['discount'],
-            ])->toArray(),
-        ]);
+            $sale = $saleService->createSale([
+                'store_id' => Auth::user()->store_id,
+                'user_id' => Auth::id(),
+                'customer_id' => $this->customerId,
+                'discount' => $this->discount,
+                'notes' => $this->notes,
+                'items' => collect($this->cart)->map(fn($item) => [
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'cost' => $item['cost'],
+                    'discount' => $item['discount'],
+                ])->toArray(),
+                'payments' => $this->payments,
+            ]);
 
-        $saleService->completeSale($sale, $this->payments);
-
-        $this->dispatch('paymentCompleted', $sale->id);
+            $this->dispatch('paymentCompleted', $sale->id);
+        } catch (\Exception $e) {
+            session()->flash('error', 'Failed to complete sale: ' . $e->getMessage());
+        }
     }
 
     public function getTotalPaid()

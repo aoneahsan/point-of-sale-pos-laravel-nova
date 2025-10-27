@@ -10,6 +10,6 @@ class TaxRate extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = ['name', 'code', 'rate', 'active', 'is_default', 'description'];
-    protected $casts = ['rate' => 'decimal:2', 'active' => 'boolean', 'is_default' => 'boolean'];
+    protected $casts = ['rate' => 'float', 'active' => 'boolean', 'is_default' => 'boolean'];
     public function scopeActive($query) { return $query->where('active', true); }
 }

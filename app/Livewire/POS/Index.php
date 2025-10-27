@@ -3,7 +3,7 @@
 namespace App\Livewire\POS;
 
 use Livewire\Component;
-use App\Models\ProductVariant;
+use App\Models\Product;
 use App\Models\Customer;
 use App\Services\SaleService;
 use Illuminate\Support\Facades\Auth;
@@ -25,30 +25,52 @@ class Index extends Component
         $this->cart = [];
     }
 
-    public function addToCart($variantId)
+    public function addToCart($productId)
     {
-        $variant = ProductVariant::with('product')->findOrFail($variantId);
+        $product = Product::findOrFail($productId);
 
-        if (!$variant->product->track_inventory || $variant->stock > 0) {
-            $existingIndex = $this->findCartItemIndex($variantId);
+        // Check if product is in stock (if tracking is enabled)
+        if (!$product->track_stock || $product->stock_quantity > 0) {
+            $existingIndex = $this->findCartItemIndex($productId);
 
             if ($existingIndex !== null) {
-                $this->cart[$existingIndex]['quantity']++;
+                // Increment quantity if item already in cart
+                $newQuantity = $this->cart[$existingIndex]['quantity'] + 1;
+
+                // Verify stock availability
+                if ($product->track_stock && $newQuantity > $product->stock_quantity) {
+                    session()->flash('error', 'Insufficient stock for ' . $product->name);
+                    return;
+                }
+
+                $this->cart[$existingIndex]['quantity'] = $newQuantity;
             } else {
                 $this->cart[] = [
-                    'variant_id' => $variant->id,
-                    'name' => $variant->product->name . ' - ' . $variant->name,
-                    'price' => $variant->price,
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'sku' => $product->sku,
+                    'price' => $product->price,
+                    'cost' => $product->cost,
                     'quantity' => 1,
                     'discount' => 0,
                 ];
             }
+        } else {
+            session()->flash('error', 'Product out of stock: ' . $product->name);
         }
     }
 
     public function updateQuantity($index, $quantity)
     {
         if ($quantity > 0) {
+            // Get the product to verify stock availability
+            $product = Product::find($this->cart[$index]['product_id']);
+
+            if ($product && $product->track_stock && $quantity > $product->stock_quantity) {
+                session()->flash('error', 'Insufficient stock. Available: ' . $product->stock_quantity);
+                return;
+            }
+
             $this->cart[$index]['quantity'] = $quantity;
         } else {
             $this->removeItem($index);
@@ -98,10 +120,10 @@ class Index extends Component
         $this->redirect(route('pos.receipt', $saleId));
     }
 
-    protected function findCartItemIndex($variantId)
+    protected function findCartItemIndex($productId)
     {
         foreach ($this->cart as $index => $item) {
-            if ($item['variant_id'] == $variantId) {
+            if ($item['product_id'] == $productId) {
                 return $index;
             }
         }

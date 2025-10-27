@@ -89,7 +89,7 @@ class TaxService
      */
     public function getActiveTaxRates(): Collection
     {
-        return TaxRate::where('is_active', true)->get();
+        return TaxRate::where('active', true)->get();
     }
 
     /**
@@ -100,7 +100,7 @@ class TaxService
     public function getDefaultTaxRate(): ?TaxRate
     {
         return TaxRate::where('is_default', true)
-            ->where('is_active', true)
+            ->where('active', true)
             ->first();
     }
 

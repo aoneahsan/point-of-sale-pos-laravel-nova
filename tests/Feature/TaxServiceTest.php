@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->taxRate = TaxRate::factory()->create([
         'name' => 'Standard VAT',
         'rate' => 10.00, // 10%
-        'is_active' => true,
+        'active' => true,
     ]);
 });
 
@@ -123,7 +123,7 @@ describe('Tax Rate Retrieval', function () {
     });
 
     test('excludes inactive tax rates', function () {
-        $this->taxRate->update(['is_active' => false]);
+        $this->taxRate->update(['active' => false]);
 
         $activeTaxRates = $this->service->getActiveTaxRates();
 

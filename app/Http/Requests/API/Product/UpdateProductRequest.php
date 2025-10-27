@@ -23,6 +23,7 @@ use Illuminate\Validation\Rule;
  * @property float|null $cost Cost price
  * @property bool|null $is_active Active status
  * @property bool|null $track_stock Track inventory
+ * @property int|null $stock_quantity Current stock quantity
  * @property int|null $reorder_point Low stock threshold
  */
 final class UpdateProductRequest extends FormRequest
@@ -96,6 +97,11 @@ final class UpdateProductRequest extends FormRequest
             'track_stock' => [
                 'sometimes',
                 'boolean',
+            ],
+            'stock_quantity' => [
+                'nullable',
+                'integer',
+                'min:0',
             ],
             'reorder_point' => [
                 'nullable',

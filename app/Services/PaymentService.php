@@ -137,7 +137,7 @@ class PaymentService
     public function isPaymentMethodActive(int $paymentMethodId): bool
     {
         return PaymentMethod::where('id', $paymentMethodId)
-            ->where('is_active', true)
+            ->where('active', true)
             ->exists();
     }
 
@@ -193,7 +193,7 @@ class PaymentService
      */
     public function getActivePaymentMethods(): Collection
     {
-        return PaymentMethod::where('is_active', true)->get();
+        return PaymentMethod::where('active', true)->get();
     }
 
     /**
@@ -205,7 +205,7 @@ class PaymentService
     public function getPaymentMethodByCode(string $code): ?PaymentMethod
     {
         return PaymentMethod::where('code', $code)
-            ->where('is_active', true)
+            ->where('active', true)
             ->first();
     }
 

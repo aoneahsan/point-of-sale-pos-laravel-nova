@@ -13,7 +13,14 @@ class Receipt extends Component
     public function mount($saleId)
     {
         $this->saleId = $saleId;
-        $this->sale = Sale::with(['store', 'customer', 'items.variant.product', 'payments.paymentMethod'])
+        $this->sale = Sale::with([
+            'store',
+            'customer',
+            'items.product.category',
+            'items.product.brand',
+            'payments.paymentMethod',
+            'user'
+        ])
             ->findOrFail($saleId);
     }
 
