@@ -16,7 +16,8 @@ beforeEach(function () {
     $this->user = User::factory()->create(['store_id' => $this->store->id]);
     $this->category = Category::factory()->create();
 
-    $this->user->givePermissionTo('manage-products');
+    $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'manage-products']);
+    $this->user->givePermissionTo($permission);
     Sanctum::actingAs($this->user, ['*']);
 });
 
@@ -31,7 +32,7 @@ describe('Product API - Create', function () {
             'price' => 99.99,
             'cost' => 50.00,
             'store_id' => $this->store->id,
-            'is_active' => true,
+            'active' => true,
             'track_stock' => true,
             'stock_quantity' => 100,
             'reorder_point' => 10,
@@ -240,7 +241,8 @@ describe('Product API - Search', function () {
 
 describe('Product API - Authorization', function () {
     test('requires authentication', function () {
-        Sanctum::actingAs(null); // Remove authentication
+        // Clear authentication by creating a fresh test request without actingAs
+        $this->app['auth']->forgetGuards();
 
         $response = $this->getJson('/api/products');
 

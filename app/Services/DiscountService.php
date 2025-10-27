@@ -59,25 +59,36 @@ class DiscountService
     public function validateCoupon(Coupon $coupon): bool
     {
         // Check if active
-        if (!$coupon->is_active) {
+        if (!$coupon->active) {
             throw new InvalidCouponException("Coupon is not active");
         }
 
-        $now = Carbon::now();
-
-        // Check if started
-        if ($coupon->start_date && $now->isBefore($coupon->start_date)) {
-            throw new InvalidCouponException("Coupon has not started yet");
-        }
-
         // Check if expired
-        if ($coupon->end_date && $now->isAfter($coupon->end_date)) {
+        if ($coupon->expires_at && now()->isAfter($coupon->expires_at)) {
             throw new InvalidCouponException("Coupon has expired");
         }
 
         // Check usage limit
-        if ($coupon->max_uses && $coupon->times_used >= $coupon->max_uses) {
+        if ($coupon->max_uses && $coupon->uses >= $coupon->max_uses) {
             throw new InvalidCouponException("Coupon usage limit exceeded");
+        }
+
+        // Validate the related discount
+        if (!$coupon->discount || !$coupon->discount->active) {
+            throw new InvalidCouponException("Coupon discount is not active");
+        }
+
+        $now = Carbon::now();
+        $discount = $coupon->discount;
+
+        // Check discount start date
+        if ($discount->start_date && $now->isBefore($discount->start_date)) {
+            throw new InvalidCouponException("Discount has not started yet");
+        }
+
+        // Check discount end date
+        if ($discount->end_date && $now->isAfter($discount->end_date)) {
+            throw new InvalidCouponException("Discount has expired");
         }
 
         return true;
@@ -93,31 +104,27 @@ class DiscountService
      */
     public function applyCoupon(Coupon $coupon, float $amount): float
     {
-        // Validate coupon
+        // Validate coupon (this also validates the related discount)
         $this->validateCoupon($coupon);
 
+        $discount = $coupon->discount;
+
         // Check minimum purchase amount
-        if ($coupon->min_purchase_amount && $amount < $coupon->min_purchase_amount) {
+        if ($discount->min_amount && $amount < $discount->min_amount) {
             throw new InvalidCouponException(
-                "Minimum purchase amount of {$coupon->min_purchase_amount} not met"
+                "Minimum purchase amount of {$discount->min_amount} not met"
             );
         }
 
         // Calculate discount based on type
-        if ($coupon->discount_type === 'percentage') {
-            $discount = $this->calculatePercentageDiscount($amount, $coupon->discount_value);
-
-            // Apply max discount cap if exists
-            if ($coupon->max_discount_amount && $discount > $coupon->max_discount_amount) {
-                $discount = $coupon->max_discount_amount;
-            }
-
-            return round($discount, 2);
+        if ($discount->type === 'percentage') {
+            $discountAmount = $this->calculatePercentageDiscount($amount, $discount->value);
+            return round($discountAmount, 2);
         }
 
         // Fixed amount discount
-        $discount = min($coupon->discount_value, $amount);
-        return round($discount, 2);
+        $discountAmount = min($discount->value, $amount);
+        return round($discountAmount, 2);
     }
 
     /**
@@ -197,7 +204,7 @@ class DiscountService
      */
     public function applyCouponByCode(string $code, float $amount): float
     {
-        $coupon = Coupon::where('code', $code)->first();
+        $coupon = Coupon::with('discount')->where('code', $code)->first();
 
         if (!$coupon) {
             throw new InvalidCouponException('Invalid coupon code');
@@ -206,7 +213,7 @@ class DiscountService
         $discountAmount = $this->applyCoupon($coupon, $amount);
 
         // Increment usage count
-        $coupon->increment('times_used');
+        $coupon->increment('uses');
 
         return $discountAmount;
     }

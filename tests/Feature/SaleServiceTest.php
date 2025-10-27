@@ -28,7 +28,7 @@ beforeEach(function () {
     ]);
     $this->paymentMethod = PaymentMethod::factory()->create([
         'name' => 'Cash',
-        'is_active' => true,
+        'active' => true,
     ]);
 });
 

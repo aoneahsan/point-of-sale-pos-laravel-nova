@@ -35,7 +35,7 @@ beforeEach(function () {
         'sale_id' => $this->sale->id,
         'product_id' => $this->product->id,
         'quantity' => 2,
-        'price' => 100.00,
+        'unit_price' => 100.00,
     ]);
 
     $paymentMethod = PaymentMethod::factory()->create();
@@ -45,7 +45,8 @@ beforeEach(function () {
     ]);
 
     // Give user permissions
-    $this->user->givePermissionTo('process-refunds');
+    $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'process-refunds']);
+    $this->user->givePermissionTo($permission);
     Sanctum::actingAs($this->user, ['*']);
 });
 

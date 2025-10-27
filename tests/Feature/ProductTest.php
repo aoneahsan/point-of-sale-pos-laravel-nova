@@ -3,17 +3,23 @@
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Store;
 
 test('can create a product', function () {
+    $store = Store::factory()->create();
     $category = Category::factory()->create();
     $brand = Brand::factory()->create();
 
     $product = Product::create([
+        'store_id' => $store->id,
         'category_id' => $category->id,
         'brand_id' => $brand->id,
         'name' => 'Test Product',
         'slug' => 'test-product',
         'sku' => 'TEST-001',
+        'price' => 99.99,
+        'cost' => 50.00,
+        'stock_quantity' => 100,
         'active' => true,
     ]);
 

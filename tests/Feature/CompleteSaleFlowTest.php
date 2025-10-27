@@ -40,11 +40,13 @@ beforeEach(function () {
     $this->paymentMethod = PaymentMethod::factory()->create([
         'name' => 'Cash',
         'code' => 'cash',
-        'is_active' => true,
+        'type' => 'cash',
+        'active' => true,
     ]);
 
-    // Give user required permissions
-    $this->user->givePermissionTo('process-sales');
+    // Create and give user required permissions
+    $permission = \Spatie\Permission\Models\Permission::firstOrCreate(['name' => 'process-sales']);
+    $this->user->givePermissionTo($permission);
 
     // Authenticate user for API tests
     Sanctum::actingAs($this->user, ['*']);
@@ -93,7 +95,7 @@ describe('Complete Sale Flow - API', function () {
         $this->assertDatabaseHas('sale_items', [
             'product_id' => $this->product1->id,
             'quantity' => 2,
-            'price' => 50.00,
+            'unit_price' => 50.00,
         ]);
 
         // Verify payment was recorded
@@ -185,7 +187,7 @@ describe('Complete Sale Flow - API', function () {
     test('can create sale with split payment', function () {
         $cardPayment = PaymentMethod::factory()->create([
             'name' => 'Credit Card',
-            'is_active' => true,
+            'active' => true,
         ]);
 
         $response = $this->postJson('/api/sales', [

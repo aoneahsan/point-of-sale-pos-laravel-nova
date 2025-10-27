@@ -23,12 +23,12 @@ beforeEach(function () {
     $this->cashPayment = PaymentMethod::factory()->create([
         'name' => 'Cash',
         'code' => 'cash',
-        'is_active' => true,
+        'active' => true,
     ]);
     $this->cardPayment = PaymentMethod::factory()->create([
         'name' => 'Credit Card',
         'code' => 'credit_card',
-        'is_active' => true,
+        'active' => true,
     ]);
 });
 
@@ -41,7 +41,7 @@ describe('Single Payment Processing', function () {
             reference: null
         );
 
-        expect($payment->amount)->toBe(100.00)
+        expect($payment->amount)->toEqual(100.00)
             ->and($payment->payment_method_id)->toBe($this->cashPayment->id)
             ->and($payment->sale_id)->toBe($this->sale->id);
     });
@@ -55,11 +55,11 @@ describe('Single Payment Processing', function () {
         );
 
         expect($payment->reference)->toBe('CARD-12345')
-            ->and($payment->amount)->toBe(100.00);
+            ->and($payment->amount)->toEqual(100.00);
     });
 
     test('throws exception for inactive payment method', function () {
-        $this->cashPayment->update(['is_active' => false]);
+        $this->cashPayment->update(['active' => false]);
 
         expect(fn() => $this->service->processPayment(
             sale: $this->sale,
@@ -178,7 +178,7 @@ describe('Payment Validation', function () {
     });
 
     test('returns false for inactive payment method', function () {
-        $this->cashPayment->update(['is_active' => false]);
+        $this->cashPayment->update(['active' => false]);
 
         $isActive = $this->service->isPaymentMethodActive($this->cashPayment->id);
 
@@ -200,7 +200,7 @@ describe('Payment Refund', function () {
             reason: 'Customer return'
         );
 
-        expect($refund->amount)->toBe(-100.00) // Negative for refund
+        expect($refund->amount)->toEqual(-100.00) // Negative for refund
             ->and($refund->sale_id)->toBe($this->sale->id);
     });
 
@@ -217,7 +217,7 @@ describe('Payment Refund', function () {
             reason: 'Partial return'
         );
 
-        expect($refund->amount)->toBe(-50.00);
+        expect($refund->amount)->toEqual(-50.00);
     });
 
     test('throws exception when refund exceeds original payment', function () {

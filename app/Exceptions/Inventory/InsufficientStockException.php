@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class InsufficientStockException extends POSException
 {
-    protected int $statusCode = Response::HTTP_UNPROCESSABLE_ENTITY;
+    protected int $statusCode = Response::HTTP_BAD_REQUEST;
 
     protected string $errorCode = 'INSUFFICIENT_STOCK';
 
