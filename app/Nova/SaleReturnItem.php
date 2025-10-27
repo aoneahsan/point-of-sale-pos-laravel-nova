@@ -130,7 +130,7 @@ class SaleReturnItem extends Resource
 
             Text::make('Original Sale', function () {
                 if ($this->saleItem && $this->saleItem->sale) {
-                    return '<a href="/nova/resources/sales/' . $this->saleItem->sale->id . '"
+                    return '<a href="/admin/resources/sales/' . $this->saleItem->sale->id . '"
                            class="link-default font-semibold">'
                            . $this->saleItem->sale->reference . '</a>';
                 }

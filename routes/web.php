@@ -7,7 +7,7 @@ use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\SaleController;
 
 Route::get('/', function () {
-    return redirect('/nova');
+    return redirect('/admin');
 });
 
 // POS Routes

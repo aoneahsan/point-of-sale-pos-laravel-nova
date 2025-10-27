@@ -17,7 +17,34 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     {
         parent::boot();
 
-        //
+        // Load custom theme to completely rebrand the interface
+        Nova::style('custom-theme', resource_path('css/nova-theme.css'));
+
+        // Set custom footer content
+        Nova::footer(function ($request) {
+            return '<div class="text-center text-sm text-gray-500">
+                POS System &copy; ' . date('Y') . ' - All Rights Reserved
+            </div>';
+        });
+
+        // Set page title
+        Nova::mainMenu(function ($request) {
+            return [
+                // This will be the main menu items
+                // Nova automatically adds resources here
+            ];
+        });
+
+        // Customize user menu
+        Nova::userMenu(function ($request, $menu) {
+            return $menu;
+        });
+
+        // Set the application name that appears in page titles
+        Nova::withBreadcrumbs();
+
+        // Hide "Nova" from browser tab titles
+        Nova::initialPath('/dashboards/main-dashboard');
     }
 
     /**

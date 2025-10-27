@@ -1,0 +1,335 @@
+/**
+ * Custom POS System Theme
+ * Completely rebranded - hides all Nova references
+ */
+
+/* Hide "Laravel Nova" text in footer */
+footer a[href*="nova.laravel.com"],
+footer a[href*="laravel.com/nova"],
+[class*="nova-footer"],
+[data-testid*="footer"] a[href*="nova"] {
+    display: none !important;
+}
+
+/* Customize footer branding */
+footer {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+footer::after {
+    content: "POS System © 2025 - All Rights Reserved";
+    display: block;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+/* Hide Nova version badge */
+[class*="version-badge"],
+[data-testid*="version"],
+.text-xs.text-gray-500:has(span) {
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Custom login page styling */
+.login-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Custom primary button colors matching our blue theme */
+.btn-primary,
+button[type="submit"],
+.bg-primary {
+    background-color: #1e40af !important;
+    border-color: #1e40af !important;
+}
+
+.btn-primary:hover,
+button[type="submit"]:hover {
+    background-color: #1e3a8a !important;
+    border-color: #1e3a8a !important;
+}
+
+/* Custom link colors */
+a {
+    color: #1e40af !important;
+}
+
+a:hover {
+    color: #1e3a8a !important;
+}
+
+/* Sidebar branding */
+.sidebar-header {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Hide any "Powered by Nova" text */
+[class*="powered-by"],
+[data-powered-by],
+.text-gray-400:contains("Nova") {
+    display: none !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Page title styling */
+h1.text-90 {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+/* Card styling */
+.card {
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+}
+
+/* Table styling */
+table {
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+/* Badge styling */
+.badge {
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+}
+
+/* Custom focus ring */
+*:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Hide meta tags or elements that might contain "Nova" */
+meta[content*="Nova"],
+meta[name*="nova"] {
+    display: none !important;
+}
+
+/* Custom success color */
+.text-success,
+.bg-success {
+    color: #059669 !important;
+    background-color: #059669 !important;
+}
+
+/* Custom error color */
+.text-danger,
+.bg-danger {
+    color: #dc2626 !important;
+    background-color: #dc2626 !important;
+}
+
+/* Custom warning color */
+.text-warning,
+.bg-warning {
+    color: #d97706 !important;
+    background-color: #d97706 !important;
+}
+
+/* Dashboard card improvements */
+.dashboard-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Resource table row hover */
+tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* Custom header background */
+.header {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Loading spinner custom color */
+.spinner,
+.loading-spinner {
+    border-color: #1e40af !important;
+}
+
+/* Remove any "trial" or "upgrade" badges */
+[class*="trial"],
+[class*="upgrade"],
+[data-testid*="trial"],
+[data-testid*="upgrade"] {
+    display: none !important;
+}
+
+/* Custom dropdown styling */
+.dropdown-menu {
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom modal styling */
+.modal {
+    border-radius: 1rem;
+}
+
+.modal-header {
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #e2e8f0;
+    padding: 1rem 1.5rem;
+}
+
+/* Notifications styling */
+.notification {
+    border-radius: 0.75rem;
+    border-left: 4px solid #1e40af;
+}
+
+/* Search bar styling */
+.search-input {
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input:focus {
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Sidebar active item */
+.sidebar-item.active {
+    background-color: #eff6ff;
+    color: #1e40af;
+    font-weight: 600;
+}
+
+/* Tabs styling */
+.tabs {
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.tab.active {
+    border-bottom-color: #1e40af;
+    color: #1e40af;
+}
+
+/* Form field improvements */
+.form-input,
+.form-select,
+.form-textarea {
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: #1e40af;
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Metric card styling */
+.metric-card {
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Action button styling */
+.action-button {
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination styling */
+.pagination {
+    border-radius: 0.5rem;
+}
+
+.pagination-item {
+    border-radius: 0.375rem;
+    transition: all 0.2s ease;
+}
+
+.pagination-item.active {
+    background-color: #1e40af;
+    color: white;
+}
+
+/* Empty state styling */
+.empty-state {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-state-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    color: #cbd5e1;
+}
