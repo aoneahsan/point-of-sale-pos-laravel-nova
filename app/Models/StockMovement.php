@@ -24,6 +24,7 @@ class StockMovement extends Model
         'relatable_type',
         'relatable_id',
         'notes',
+        'reason', // Alias for notes
     ];
 
     protected $casts = [

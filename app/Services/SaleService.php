@@ -113,12 +113,13 @@ class SaleService
 
             // Deduct inventory
             foreach ($sale->items as $item) {
-                if ($item->product->track_stock) {
+                if ($item->product && $item->product->track_stock) {
                     $this->inventoryService->deductStock(
-                        $item->product_id,
-                        $item->quantity,
-                        "Sale {$sale->reference}",
-                        $sale->store_id
+                        product: $item->product,
+                        quantity: $item->quantity,
+                        reason: "Sale {$sale->reference}",
+                        reference: 'sale',
+                        referenceId: $sale->id
                     );
                 }
             }

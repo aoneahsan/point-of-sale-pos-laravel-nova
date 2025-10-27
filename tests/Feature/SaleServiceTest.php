@@ -56,7 +56,7 @@ describe('Sale Creation', function () {
         $sale = $this->service->createSale($saleData);
 
         expect($sale)->toBeInstanceOf(Sale::class)
-            ->and($sale->total)->toBe(200.00)
+            ->and($sale->total)->toEqual(200.00)
             ->and($sale->items)->toHaveCount(1)
             ->and($sale->payments)->toHaveCount(1)
             ->and($sale->status)->toBe('completed');
@@ -95,7 +95,7 @@ describe('Sale Creation', function () {
         $sale = $this->service->createSale($saleData);
 
         expect($sale->items)->toHaveCount(2)
-            ->and($sale->total)->toBe(250.00);
+            ->and($sale->total)->toEqual(250.00);
     });
 
     test('can create sale without customer', function () {
@@ -120,7 +120,7 @@ describe('Sale Creation', function () {
         $sale = $this->service->createSale($saleData);
 
         expect($sale->customer_id)->toBeNull()
-            ->and($sale->total)->toBe(100.00);
+            ->and($sale->total)->toEqual(100.00);
     });
 
     test('calculates subtotal and total correctly', function () {
@@ -144,8 +144,8 @@ describe('Sale Creation', function () {
 
         $sale = $this->service->createSale($saleData);
 
-        expect($sale->subtotal)->toBe(300.00)
-            ->and($sale->total)->toBe(300.00);
+        expect($sale->subtotal)->toEqual(300.00)
+            ->and($sale->total)->toEqual(300.00);
     });
 });
 
@@ -178,7 +178,7 @@ describe('Sale with Split Payments', function () {
         $sale = $this->service->createSale($saleData);
 
         expect($sale->payments)->toHaveCount(2)
-            ->and($sale->payments->sum('amount'))->toBe(200.00);
+            ->and($sale->payments->sum('amount'))->toEqual(200.00);
     });
 });
 

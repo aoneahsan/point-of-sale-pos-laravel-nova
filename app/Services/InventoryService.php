@@ -14,10 +14,15 @@ class InventoryService
     /**
      * Add stock to a product
      */
-    public function addStock(int $productId, int $quantity, string $reason, int $storeId): Product
-    {
-        return DB::transaction(function () use ($productId, $quantity, $reason, $storeId) {
-            $product = Product::lockForUpdate()->findOrFail($productId);
+    public function addStock(
+        Product $product,
+        int $quantity,
+        string $reason,
+        ?string $reference = null,
+        ?int $referenceId = null
+    ): Product {
+        return DB::transaction(function () use ($product, $quantity, $reason, $reference, $referenceId) {
+            $product = Product::lockForUpdate()->findOrFail($product->id);
 
             if ($quantity <= 0) {
                 throw new InvalidStockAdjustmentException("Quantity must be positive");
@@ -29,13 +34,15 @@ class InventoryService
             $product->update(['stock_quantity' => $quantityAfter]);
 
             $this->createStockMovement([
-                'product_id' => $productId,
-                'store_id' => $storeId,
+                'product_id' => $product->id,
+                'store_id' => $product->store_id,
                 'type' => 'in',
                 'quantity' => $quantity,
                 'quantity_before' => $quantityBefore,
                 'quantity_after' => $quantityAfter,
-                'reference' => $reason,
+                'reference' => $reference ?? $reason,
+                'reference_id' => $referenceId,
+                'reason' => $reason,
             ]);
 
             return $product->fresh();
@@ -45,18 +52,25 @@ class InventoryService
     /**
      * Deduct stock from a product
      */
-    public function deductStock(int $productId, int $quantity, string $reason, int $storeId): Product
-    {
-        return DB::transaction(function () use ($productId, $quantity, $reason, $storeId) {
-            $product = Product::lockForUpdate()->findOrFail($productId);
+    public function deductStock(
+        Product $product,
+        int $quantity,
+        string $reason,
+        ?string $reference = null,
+        ?int $referenceId = null
+    ): Product {
+        return DB::transaction(function () use ($product, $quantity, $reason, $reference, $referenceId) {
+            $product = Product::lockForUpdate()->findOrFail($product->id);
 
             if ($quantity <= 0) {
                 throw new InvalidStockAdjustmentException("Quantity must be positive");
             }
 
-            if (!$this->hasAvailableStock($productId, $quantity)) {
-                throw new InsufficientStockException(
-                    "Insufficient stock for product ID {$productId}. Available: {$product->stock_quantity}, Requested: {$quantity}"
+            if ($product->stock_quantity < $quantity) {
+                throw InsufficientStockException::forProduct(
+                    $product->id,
+                    $quantity,
+                    $product->stock_quantity
                 );
             }
 
@@ -66,13 +80,15 @@ class InventoryService
             $product->update(['stock_quantity' => $quantityAfter]);
 
             $this->createStockMovement([
-                'product_id' => $productId,
-                'store_id' => $storeId,
+                'product_id' => $product->id,
+                'store_id' => $product->store_id,
                 'type' => 'out',
-                'quantity' => $quantity,
+                'quantity' => -$quantity, // Negative for deductions
                 'quantity_before' => $quantityBefore,
                 'quantity_after' => $quantityAfter,
-                'reference' => $reason,
+                'reference' => $reference ?? $reason,
+                'reference_id' => $referenceId,
+                'reason' => $reason,
             ]);
 
             return $product->fresh();
@@ -82,10 +98,10 @@ class InventoryService
     /**
      * Adjust product stock to a specific quantity
      */
-    public function adjustStock(int $productId, int $newQuantity, string $reason, int $storeId): Product
+    public function adjustStock(Product $product, int $newQuantity, string $reason): Product
     {
-        return DB::transaction(function () use ($productId, $newQuantity, $reason, $storeId) {
-            $product = Product::lockForUpdate()->findOrFail($productId);
+        return DB::transaction(function () use ($product, $newQuantity, $reason) {
+            $product = Product::lockForUpdate()->findOrFail($product->id);
 
             if ($newQuantity < 0) {
                 throw new InvalidStockAdjustmentException("Stock quantity cannot be negative");
@@ -93,18 +109,18 @@ class InventoryService
 
             $quantityBefore = $product->stock_quantity;
             $difference = $newQuantity - $quantityBefore;
-            $type = $difference > 0 ? 'in' : 'out';
 
             $product->update(['stock_quantity' => $newQuantity]);
 
             $this->createStockMovement([
-                'product_id' => $productId,
-                'store_id' => $storeId,
+                'product_id' => $product->id,
+                'store_id' => $product->store_id,
                 'type' => 'adjustment',
-                'quantity' => abs($difference),
+                'quantity' => $difference, // Can be positive or negative
                 'quantity_before' => $quantityBefore,
                 'quantity_after' => $newQuantity,
                 'reference' => $reason,
+                'reason' => $reason,
             ]);
 
             return $product->fresh();
@@ -114,31 +130,30 @@ class InventoryService
     /**
      * Check if product has available stock
      */
-    public function hasAvailableStock(int $productId, int $requiredQuantity): bool
+    public function checkStockAvailability(Product $product, int $quantity): bool
     {
-        $product = Product::findOrFail($productId);
-
         if (!$product->track_stock) {
             return true;
         }
 
-        return $product->stock_quantity >= $requiredQuantity;
+        return $product->stock_quantity >= $quantity;
     }
 
     /**
      * Check if product is low on stock
      */
-    public function isLowStock(int $productId): bool
+    public function isLowStock(Product $product): bool
     {
-        $product = Product::findOrFail($productId);
         return $product->isLowStock();
     }
 
     /**
      * Get all low stock products for a store
      */
-    public function getLowStockProducts(int $storeId): Collection
+    public function getLowStockProducts($store): Collection
     {
+        $storeId = is_object($store) ? $store->id : $store;
+
         return Product::where('store_id', $storeId)
             ->lowStock()
             ->with(['category', 'brand'])
@@ -171,11 +186,13 @@ class InventoryService
             'store_id' => $data['store_id'],
             'type' => $data['type'],
             'quantity' => $data['quantity'],
-            'quantity_before' => $data['quantity_before'],
-            'quantity_after' => $data['quantity_after'],
+            'quantity_before' => $data['quantity_before'] ?? null,
+            'quantity_after' => $data['quantity_after'] ?? null,
             'reference' => $data['reference'] ?? null,
             'relatable_type' => $data['relatable_type'] ?? null,
-            'relatable_id' => $data['relatable_id'] ?? null,
+            'relatable_id' => $data['relatable_id'] ?? $data['reference_id'] ?? null,
+            'reason' => $data['reason'] ?? null,
+            'notes' => $data['notes'] ?? null,
         ]);
     }
 }

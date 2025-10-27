@@ -53,4 +53,12 @@ class SaleItem extends Model
     {
         return ($this->unit_price - $this->unit_cost) * $this->quantity;
     }
+
+    /**
+     * Get the profit attribute accessor
+     */
+    public function getProfitAttribute(): float
+    {
+        return $this->getProfit();
+    }
 }
