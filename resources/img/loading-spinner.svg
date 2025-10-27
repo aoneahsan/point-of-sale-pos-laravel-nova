@@ -1,0 +1,24 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Custom loading spinner -->
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .spinner {
+      animation: spin 1s linear infinite;
+      transform-origin: 20px 20px;
+    }
+  </style>
+
+  <g class="spinner">
+    <!-- Shopping cart icon that spins -->
+    <rect x="6" y="10" width="20" height="16" rx="2" fill="none" stroke="#1e40af" stroke-width="2.5"/>
+    <rect x="9" y="13" width="14" height="8" rx="1" fill="#1e40af" opacity="0.2"/>
+    <circle cx="14" cy="28" r="2" fill="#1e40af"/>
+    <circle cx="22" cy="28" r="2" fill="#1e40af"/>
+
+    <!-- Rotating arc -->
+    <path d="M 20 2 A 18 18 0 0 1 36 20" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+  </g>
+</svg>

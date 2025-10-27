@@ -1,0 +1,38 @@
+<svg width="300" height="200" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 403 Forbidden Illustration -->
+
+  <!-- Large 403 text -->
+  <text x="150" y="90" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="#e2e8f0" text-anchor="middle">403</text>
+
+  <!-- Shopping cart with lock -->
+  <g transform="translate(125, 100)">
+    <rect x="0" y="0" width="50" height="40" rx="3" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+    <rect x="6" y="6" width="38" height="24" rx="2" fill="white"/>
+
+    <!-- Lock icon -->
+    <g transform="translate(17, 10)">
+      <rect x="4" y="8" width="12" height="14" rx="2" fill="#f59e0b" opacity="0.2"/>
+      <path d="M 6 8 L 6 5 C 6 2.8 7.8 1 10 1 C 12.2 1 14 2.8 14 5 L 14 8" stroke="#f59e0b" stroke-width="2" fill="none"/>
+      <rect x="4" y="8" width="12" height="10" rx="1.5" fill="none" stroke="#f59e0b" stroke-width="2"/>
+      <circle cx="10" cy="13" r="1.5" fill="#f59e0b"/>
+    </g>
+
+    <circle cx="15" cy="38" r="3" fill="#f59e0b"/>
+    <circle cx="35" cy="38" r="3" fill="#f59e0b"/>
+  </g>
+
+  <!-- Warning symbols -->
+  <g transform="translate(60, 140)">
+    <path d="M 0 10 L 5 0 L 10 10 Z" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.3"/>
+    <circle cx="5" cy="6" r="1" fill="#f59e0b" opacity="0.3"/>
+  </g>
+
+  <g transform="translate(220, 50)">
+    <path d="M 0 12 L 6 0 L 12 12 Z" fill="none" stroke="#f59e0b" stroke-width="2" opacity="0.4"/>
+    <circle cx="6" cy="7" r="1" fill="#f59e0b" opacity="0.4"/>
+  </g>
+
+  <!-- Decorative circles -->
+  <circle cx="50" cy="60" r="6" fill="#fef3c7" opacity="0.6"/>
+  <circle cx="250" cy="130" r="8" fill="#fed7aa" opacity="0.6"/>
+</svg>
