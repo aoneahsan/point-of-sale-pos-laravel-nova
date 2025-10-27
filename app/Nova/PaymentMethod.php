@@ -7,7 +7,7 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\JSON;
+use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class PaymentMethod extends Resource
@@ -35,7 +35,7 @@ class PaymentMethod extends Resource
             ])->default('cash'),
             Boolean::make('Active')->default(true),
             Number::make('Sort Order')->default(0),
-            JSON::make('Settings'),
+            KeyValue::make('Settings'),
         ];
     }
 }

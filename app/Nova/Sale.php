@@ -139,14 +139,11 @@ class Sale extends Resource
                 ->onlyOnDetail(),
 
             // Relationships
-            HasMany::make('Items', 'items', SaleItem::class)
-                ->help('Individual line items in this sale'),
+            HasMany::make('Items', 'items', SaleItem::class),
 
-            HasMany::make('Payments', 'payments', SalePayment::class)
-                ->help('Payment transactions for this sale'),
+            HasMany::make('Payments', 'payments', SalePayment::class),
 
-            HasMany::make('Returns', 'returns', SaleReturn::class)
-                ->help('Return/refund records for this sale'),
+            HasMany::make('Returns', 'returns', SaleReturn::class),
         ];
     }
 

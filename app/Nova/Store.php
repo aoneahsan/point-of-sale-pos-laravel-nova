@@ -6,7 +6,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Fields\Boolean;
-use Laravel\Nova\Fields\JSON;
+use Laravel\Nova\Fields\KeyValue;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -27,7 +27,7 @@ class Store extends Resource
             Text::make('Email')->rules('nullable', 'email'),
             Text::make('Tax Number'),
             Boolean::make('Active')->default(true),
-            JSON::make('Settings'),
+            KeyValue::make('Settings'),
             HasMany::make('Users'),
             HasMany::make('Product Variants', 'productVariants'),
             HasMany::make('Sales'),
